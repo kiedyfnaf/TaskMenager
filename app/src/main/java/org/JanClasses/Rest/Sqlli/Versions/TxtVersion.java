@@ -1,10 +1,11 @@
-package org.JanClasses.Rest.Sql.Versions;
+package org.JanClasses.Rest.Sqlli.Versions;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.List;
+import org.JanClasses.Rest.Sqlli.Interface.Interface;
+import org.JanClasses.Rest.TasksInfo.TaskDetails;
 
-public class TxtVersion implements org.JanClasses.Rest.Sql.Interface.Interface.TaskRepository {
+public class TxtVersion implements Interface.TaskRepository {
     private final String filename;
 
     public TxtVersion(String filename) {
@@ -12,27 +13,54 @@ public class TxtVersion implements org.JanClasses.Rest.Sql.Interface.Interface.T
     }
 
     @Override
-    public void addTask(String id, String title, String description, int status) {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filename, true))) {
-            bw.write(id + "," + title + "," + description + "," + status);
-            bw.newLine();
+    public ArrayList<TaskDetails> getAllTasks() {
+        ArrayList<TaskDetails> taskList = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(", ");
+                if (parts.length == 4) {
+                    String id = parts[0].trim();
+                    String name = parts[1].trim();
+                    String description = parts[2].trim();
+                    int isDone = Integer.parseInt(parts[3].trim());
+                    taskList.add(new TaskDetails(id, name, description, isDone));
+                }
+            }
+        } catch (IOException e) {
+
+        }
+        return taskList;
+    }
+
+    @Override
+    public void clearAll() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter (filename, false))) {
+            writer.write("");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void addTasks(ArrayList<TaskDetails> tasks) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename, false))) {
+            for (TaskDetails task : tasks) {
+                writer.write(task.toPlainString());
+                writer.newLine();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public List<String> listTasks() {
-        List<String> tasks = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] parts = line.split(",", -1);
-                tasks.add(parts[0] + " | " + parts[1] + " | " + (Integer.parseInt(parts[3]) == 1 ? "Done" : "Pending"));
-            }
+    public boolean isDatabaseEmpty(String filename) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            return reader.readLine() == null;
         } catch (IOException e) {
-            e.printStackTrace();
+            return true;
         }
-        return tasks;
+
     }
 }

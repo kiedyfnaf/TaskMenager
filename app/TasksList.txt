@@ -2,9 +2,11 @@ t1.0, Desk, Fix the desk, 0
 t3.0, Garden, Water the plants, 0
 t4.0, Report, Finish the monthly report, 1
 t6.0, Groceries, Buy vegetables and fruits, 1
-t7.0, Mail, Send the package, 0
 t8.0, Books, Return library books, 1
-t9.0, Phone, Charge the phone, 1
 t10.0, Gym, Do a 30-minute workout, 0
 t11.0, Dead, Drop dead in the bed, 0
 t12.0, Bed, Go to bed, 1
+t13.0, Games, Play wot, 0
+t15.0, Horse, Eat a horse, 1
+t16.0, Fish, Go fishing, 1
+t20.0, bill, get bill, 0

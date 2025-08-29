@@ -1,7 +1,6 @@
 package org.JanClasses.Cases;
 
 import org.JanClasses.Rest.TasksInfo.TaskDetails;
-
 import java.util.ArrayList;
 import java.util.Scanner;
 

@@ -5,24 +5,26 @@ import java.util.ArrayList;
 import org.JanClasses.Rest.Sqlli.Interface.Interface;
 import org.JanClasses.Rest.TasksInfo.TaskDetails;
 
-public class SqlVersion implements Interface.TaskRepository {
-    public static final String DB_URL = "jdbc:sqlite:tasks.db";
+public class MySqlVersion implements Interface.TaskRepository {
+    private static final String url = "jdbc:mysql://localhost:3306/taskingdb"; // 👈 DB
+    private static final String user = "MB"; // 👈 your MySQL user
+    private static final String password = "Jandrzej1!"; // 👈 your MySQL password
 
-    public SqlVersion() {
+    public MySqlVersion() {
         createTableIfNotExists();
     }
 
-    public Connection connect() throws SQLException {
-        return DriverManager.getConnection(DB_URL);
+    public static Connection connect() throws SQLException {
+        return DriverManager.getConnection(url, user, password);
     }
 
     private void createTableIfNotExists() {
         String sql = """
-            CREATE TABLE IF NOT EXISTS tasks (
-                id TEXT ,
-                title TEXT ,
+            CREATE TABLE IF NOT EXISTS tasking (
+                id VARCHAR(50) ,
+                title VARCHAR(250) ,
                 description TEXT,
-                done INTEGER
+                done INT
             )
         """;
         try (Connection conn = connect(); Statement stmt = conn.createStatement()) {
@@ -34,7 +36,7 @@ public class SqlVersion implements Interface.TaskRepository {
 
     @Override
     public void addTasks(ArrayList<TaskDetails> tasks) {
-        String sql = "INSERT INTO tasks(id, title, description, done) VALUES(?, ?, ?, ?)";
+        String sql = "INSERT INTO tasking (id, title, description, done) VALUES (?, ?, ?, ?)";
         try (Connection conn = connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             for (TaskDetails task : tasks) {
@@ -53,7 +55,7 @@ public class SqlVersion implements Interface.TaskRepository {
     @Override
     public ArrayList<TaskDetails> getAllTasks() {
         ArrayList<TaskDetails> tasks = new ArrayList<>();
-        String sql = "SELECT id, title, description, done FROM tasks";
+        String sql = "SELECT id, title, description, done FROM tasking";
         try (Connection conn = connect();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
@@ -73,7 +75,7 @@ public class SqlVersion implements Interface.TaskRepository {
 
     @Override
     public void clearAll() {
-        String sql = "DELETE FROM tasks";
+        String sql = "DELETE FROM tasking";
         try (Connection conn = connect(); Statement stmt = conn.createStatement()) {
             stmt.executeUpdate(sql);
         } catch (SQLException e) {
@@ -83,12 +85,16 @@ public class SqlVersion implements Interface.TaskRepository {
 
     @Override
     public boolean isDatabaseEmpty(String filename) {
-        String sql = "SELECT COUNT(*) FROM tasks";
+        String sql = "SELECT COUNT(*) FROM tasking";
         try (Connection conn = connect(); Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
-            return rs.getInt(1) == 0; // true if count == 0
+            if (rs.next()) { // Move to the first row
+                return rs.getInt(1) == 0; // True if no rows
+            }
+            return true; // Default to empty if query fails to return rows
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            System.out.println("Error checking database: " + e.getMessage());
+            return true; // Safe default on error (assume empty to avoid crash)
         }
     }
 }

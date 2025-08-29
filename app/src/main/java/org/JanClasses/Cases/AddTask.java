@@ -1,13 +1,11 @@
 package org.JanClasses.Cases;
 
 import org.JanClasses.Rest.TasksInfo.TaskDetails;
-import org.JanClasses.Rest.Writer.WriteFile;
-
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class AddTask {
-    public static void taskAdder(String fileName) {
+    public static void taskAdder(ArrayList<TaskDetails> taskList) {
         System.out.print("\n");
         Scanner scanner1 = new Scanner(System.in);
         System.out.print("Enter task id: ");
@@ -23,11 +21,6 @@ public class AddTask {
         System.out.println("Enter task status (0/1): ");
         int taskStatus = scanner1.nextInt();
         TaskDetails addNewTask = new TaskDetails(taskId1, taskName, taskDescription, taskStatus);
-        try {
-            WriteFile newTask = new WriteFile(fileName, true);
-            newTask.writeToFile(taskId1 + ", " + taskName + ", " + taskDescription + ", " + taskStatus);
-        } catch (IOException e) {
-            System.out.println("Error writing file");
-        }
+        taskList.add(addNewTask);
     }
 }

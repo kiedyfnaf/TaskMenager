@@ -1,4 +1,4 @@
-package org.JanClasses.Sql.UtilsForCmd;
+package org.JanClasses.Rest.UtilsForCmd;
 
 public class ClearScreen {
     public static void clearScreen() {

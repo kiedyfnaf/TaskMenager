@@ -23,6 +23,12 @@ dependencies {
 
     // This dependency is used by the application.
     implementation libs.guava
+
+    implementation 'org.xerial:sqlite-jdbc:3.46.0.0'
+
+    implementation 'org.slf4j:slf4j-simple:2.0.13'
+
+    implementation 'com.mysql:mysql-connector-j:8.0.33'
 }
 
 // Apply a specific Java toolchain to ease working on different environments.

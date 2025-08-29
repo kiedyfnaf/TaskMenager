@@ -1,10 +1,14 @@
-package org.JanClasses.Rest.Sql.Interface;
+package org.JanClasses.Rest.Sqlli.Interface;
 
+import org.JanClasses.Rest.TasksInfo.TaskDetails;
+import java.util.ArrayList;
 import java.util.List;
+
 public class Interface {
     public interface TaskRepository {
-        void addTask(String id, String title, String description, int status);
-
-        List<String> listTasks();
+        void addTasks(ArrayList<TaskDetails> tasks);
+        void clearAll();
+        List<TaskDetails> getAllTasks();
+        boolean isDatabaseEmpty(String filename);
     }
 }
